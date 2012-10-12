@@ -1,10 +1,7 @@
 #include <math.h>
 #include <fftw3.h>
-
 #include "auxi.h"
 #include "lvcvirgo.h"
-
-extern double *t2, oms;
 
 double FStat (double *F, int nfft, int nav, int indx) {
   /* FStat Smoothed F-statistic */
