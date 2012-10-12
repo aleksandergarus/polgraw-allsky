@@ -3,10 +3,11 @@
 #include "auxi.h"
 #include "lvcvirgo.h"
 
-void
+int 
 gridr (double *M, int *spndr, int *nr, int *mr) {
-  double cof, Mp[16], smx[64], d, Ob;
-  int i, j, indx[4];
+
+  double cof, Mp[16], smx[64], d, Ob, al1, al2;
+  int i, j, nr0, nr1, mr0, mr1, k, indx[4];
 
   /* Grid range */
 
@@ -51,8 +52,8 @@ gridr (double *M, int *spndr, int *nr, int *mr) {
   for (i=0; i<16; i++)
     lubksb (Mp, 4, indx, smx+4*i);
 
-  spndr[0] = nr[0] = mr[0] = 16384;
-  spndr[1] = nr[1] = mr[1] = -16384;
+  spndr[0] = nr0 = mr0 = 16384;
+  spndr[1] = nr1 = mr1 = -16384;
 
   for (i=0; i<16; i++) {
     if (floor(smx[4*i+1]) < spndr[0])
@@ -60,16 +61,41 @@ gridr (double *M, int *spndr, int *nr, int *mr) {
     if (ceil(smx[4*i+1]) > spndr[1])
       spndr[1] = ceil(smx[4*i+1]);
 
-    if (floor(smx[4*i+2]) < nr[0])
-      nr[0] = floor(smx[4*i+2]);
-    if (ceil(smx[4*i+2]) > nr[1])
-      nr[1] = ceil(smx[4*i+2]);
+    if (floor(smx[4*i+2]) < nr0)
+      nr0 = floor(smx[4*i+2]);
+    if (ceil(smx[4*i+2]) > nr1)
+      nr1 = ceil(smx[4*i+2]);
 
-    if (floor(smx[4*i+3]) < mr[0])
-      mr[0] = floor(smx[4*i+3]);
-    if (ceil(smx[4*i+3]) > mr[1])
-      mr[1] = ceil(smx[4*i+3]);
+    if (floor(smx[4*i+3]) < mr0)
+      mr0 = floor(smx[4*i+3]);
+    if (ceil(smx[4*i+3]) > mr1)
+      mr1 = ceil(smx[4*i+3]);
   }
+
+
+  k=0; 
+  for(i=nr0; i<nr1; i++)
+	for(j=mr0; j<mr1; j++) { 
+
+		// Checking if we are inside the sky ellipse
+		al1 = i*M[10] + j*M[14];
+		al2 = i*M[11] + j*M[15];
+		if((sqr(al1)+sqr(al2))/sqr(oms) <= 1.) { 
+			nr[k] = i ; 
+			mr[k] = j ;  
+			k++; 
+		}
+	}
+
+  nr[0] = nr0 ; 
+  nr[1] = nr1 ; 
+
+  mr[0] = mr0 ; 
+  mr[1] = mr1 ;   
+  
+  // number of points in the sky ellipse
+  return k ; 	
+
 } /* gridr() */
 
 

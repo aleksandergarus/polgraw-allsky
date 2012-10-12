@@ -37,7 +37,7 @@ extern "C"
 		   int *, int, int, int *, double, double,		\
 		   double, int);
 
-  void gridr (double *, int *, int *, int *);
+  int gridr (double *, int *, int *, int *);
 
 #ifdef __cplusplus
 }
