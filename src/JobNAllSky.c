@@ -32,7 +32,7 @@ static int help_flag=0;
 #endif
 
 double *cosmodf, *sinmodf, *t2, *aa, *bb, \
-	   *shftf, *shft, *xDat, *xDatv, *DetSSB, *DetSSBv, *F;
+	   *shftf, *shft, *xDat, *DetSSB, *F;
 complex double *xDatma, *xDatmb;
 
 int
@@ -51,7 +51,7 @@ JobNAllSky (int argc, char *argv[]) {
   double *aaddsig, *baddsig, h0, sinaadd, cosaadd, sindadd, cosdadd, 
 		phaseadd, shiftadd, signadd, thsnr=0., nSource[3], sgnlo[10], sgnlol[4];
 		
-  fftw_complex *xa, *xb, *xao, *xbo, *xDa, *xDb, *rDa, *rDb;
+  fftw_complex *xa, *xao, *xDa, *rDa;
   fftw_plan plan, pl_int, pl_inv;
   FILE *wisdom, *state, *data;
   struct flock lck;
@@ -291,10 +291,10 @@ JobNAllSky (int argc, char *argv[]) {
   
     //# Testing printout
 	//printf("GW amplitude h0: %le\n", h0);				 
-    //printf("sgnlo parameters:\n%.16le\n %.16le\n %.16le\n %.16le\n", 
-			//sgnlo[0], sgnlo[1], sgnlo[2], sgnlo[3]); 
-    //printf("%.16le\n %.16le\n %.16le\n %.16le\n %.16le\n %.16le\n", 
-			//sgnlo[4], sgnlo[5], sgnlo[6], sgnlo[7], sgnlo[8], sgnlo[9]) ; 
+	//printf("sgnlo parameters:\n%.16le\n %.16le\n %.16le\n %.16le\n", 
+	//sgnlo[0], sgnlo[1], sgnlo[2], sgnlo[3]); 
+	//printf("%.16le\n %.16le\n %.16le\n %.16le\n %.16le\n %.16le\n", 
+	//sgnlo[4], sgnlo[5], sgnlo[6], sgnlo[7], sgnlo[8], sgnlo[9]) ; 
   
   // Allocates and initializes to zero the data, detector ephemeris 
   // and the F-statistic arrays
@@ -408,10 +408,6 @@ JobNAllSky (int argc, char *argv[]) {
 		nr[1] = nr[0] + gsize ; nr[0] -= gsize ;    
 		mr[1] = mr[0] + gsize ; mr[0] -= gsize ; 
 		pmr[1] = pmr[0] ; 
-       
-        //#
-		//printf("Grid range:\nspndr %d %d\nnr %d %d\nmr %d %d\npmr %d %d\n", 
-		//spndr[0], spndr[1], nr[0], nr[1], mr[0], mr[1], pmr[0], pmr[1]) ;
        	  
 		// sgnlo[2]: declination, snglo[3]: right ascension 
 		sindadd = sin(sgnlo[2]) ; 
@@ -462,13 +458,7 @@ JobNAllSky (int argc, char *argv[]) {
   nmax = nfft-2*NAV;
 
   coft = oms; 
-
-  //#
-  //printf("%lf %lf\n", sgnlo[8], sgnlo[9]) ;
-  //printf("%lf %lf\n", (nr[0]*M[10]+mr[0]*M[14])/coft, 
-		//(nr[0]*M[11]+mr[0]*M[15])/coft) ;
-  //printf("nr, mr: %d %d\n", nr[0], mr[0]) ; 		
-  
+ 
   // Imports a "wisdom file" containing information about how to optimally 
   // compute Fourier transforms on a given machine. If such file is not 
   // present, it will be created after the measure runs of the fft_plans 
@@ -495,9 +485,7 @@ JobNAllSky (int argc, char *argv[]) {
   // case INT (simple interpolation [interbinning] of a shorter Fourier transform)
   if(fftinterp==INT) { 
 
-	xb = xa + nfft;
 	xao = fftw_malloc (2 * nfft * sizeof (fftw_complex));
-	xbo = xao + nfft;
  
 	// Plans a multidimensional DFT, where the input variables are:
 	plan = fftw_plan_many_dft 
@@ -527,7 +515,6 @@ JobNAllSky (int argc, char *argv[]) {
   } else { 
 
 	nfftf = fftpad*nfft ; 
-	xb = xa + nfftf ; 
 
 	// Plans a multidimensional DFT, where the input variables are:
 	plan = fftw_plan_many_dft 
@@ -559,14 +546,12 @@ JobNAllSky (int argc, char *argv[]) {
   // These two plans below are used in the resampling 
   // procedure in JobCore() 
   xDa = xa;
-  xDb = xDa + nfft;
   pl_int = fftw_plan_many_dft (1, &nfft, 2, xDa, NULL, 1, nfft, xDa,	\
 			       NULL, 1, nfft, FFTW_FORWARD,		\
 			       FFTW_MEASURE);
 
   rDa = xa;
   Ninterp = interpftpad*nfft;
-  rDb = rDa + Ninterp;
   pl_inv = fftw_plan_many_dft (1, &Ninterp, 2, rDa, NULL, 1, Ninterp,	\
 			       rDa, NULL, 1, Ninterp, FFTW_BACKWARD,	\
 			       FFTW_MEASURE);
