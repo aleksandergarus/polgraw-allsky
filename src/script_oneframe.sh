@@ -24,7 +24,7 @@ if [[ $last_frame ]]; then
 
 	for frame in $(awk '{if($1<='${last_frame}') print $1}' LONF|sort -r); do
 
-	        ./search -d /home/mbejger/xdat -i ${frame} -b NEXTB --whitenoise -a <(echo $sig_pars)	
+	        ./search -d DATA -i ${frame} -b NEXTB --whitenoise -a <(echo $sig_pars)	
 		let "num_of_frames += 1"
 
 	done 
