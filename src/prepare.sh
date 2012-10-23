@@ -20,12 +20,11 @@ cp ${code_home}/get_summary.sh .
 #for the case when signal enters another band
 next_band=$(($band+1))
 
-# some replacements in script.sh 
+# replacements in script.sh 
 sed -i 's|BAND|'$band'|g;s|GSIZE|'$gsize'|g' script.sh
-sed -i 's|H0|'$h0'|g;s|CELL|'$cell'|g' script.sh
+sed -i 's|H0|'$h0'|g;s|CELL|'$cell'|g;s|COINCH|'$coinc_home'|g' script.sh
 sed -i 's|DATA|'$data'|g;s|LOF|'$list_of_frames'/'$band'.d|g' script.sh
-sed -i 's|NEXTB|'$next_band'|g;s|LONF|'$list_of_frames'/'$next_band'.d|g' script.sh 
-sed -i 's|COINCH|'$coinc_home'|g' script.sh
+sed -i 's|NEXTB|'$next_band'|g;s|LONF|'$list_of_frames'/'$next_band'.d|g' script.sh
 
 # loop below produces a file called run.sh that launches the simulations 
 # in catalogues 01, 02,..., $howmany
