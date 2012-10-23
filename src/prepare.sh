@@ -1,6 +1,7 @@
 #!/bin/bash
 
-code_home=/home/michal/addsig/src	# place where the codes are 
+code_home=/home/michal/addsig/src	# search codes dir
+coinc_home=/home/orest			# coincidence codes dir  
 data=/storage/VSR1-allsky-data/xdat	# place where the data is 
 band=528                                # band number 
 howmany=100				# how many simulations
@@ -24,6 +25,7 @@ sed -i 's|BAND|'$band'|g;s|GSIZE|'$gsize'|g' script.sh
 sed -i 's|H0|'$h0'|g;s|CELL|'$cell'|g' script.sh
 sed -i 's|DATA|'$data'|g;s|LOF|'$list_of_frames'/'$band'.d|g' script.sh
 sed -i 's|NEXTB|'$next_band'|g;s|LONF|'$list_of_frames'/'$next_band'.d|g' script.sh 
+sed -i 's|COINCH|'$coinc_home'|g' script.sh
 
 # loop below produces a file called run.sh that launches the simulations 
 # in catalogues 01, 02,..., $howmany
