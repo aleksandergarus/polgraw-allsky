@@ -284,18 +284,9 @@ JobNAllSky (int argc, char *argv[]) {
 
   if(sgnlo[0] - 2.*sgnlo[1]*Nv*(68-i) > 0.96875*M_PI)
 	  exit_stat=137;
-//  else 
-//	  exit(0) ; 
 
   }
-  
-    //# Testing printout
-	//printf("GW amplitude h0: %le\n", h0);				 
-	//printf("sgnlo parameters:\n%.16le\n %.16le\n %.16le\n %.16le\n", 
-	//sgnlo[0], sgnlo[1], sgnlo[2], sgnlo[3]); 
-	//printf("%.16le\n %.16le\n %.16le\n %.16le\n %.16le\n %.16le\n", 
-	//sgnlo[4], sgnlo[5], sgnlo[6], sgnlo[7], sgnlo[8], sgnlo[9]) ; 
-  
+   
   // Allocates and initializes to zero the data, detector ephemeris 
   // and the F-statistic arrays
   xDat = (double *) calloc (N, sizeof (double));
