@@ -33,8 +33,7 @@ fi
 # Signal-to-noise estimated from the input data
 snr=$(grep "SNR:" *.err | awk '{print $2}')
 
-./b2t candidates/triggers_* | sort -gk5 > candidates/t
-highsnr=$(tail -1  candidates/t)
+highsnr=$(./b2t candidates/triggers_* | sort -gk5 | tail -1)
 sim_num=${PWD##*/} 
 
 #rm -fr state* candidates/* *.e* *.o*
