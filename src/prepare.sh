@@ -12,7 +12,7 @@ list_of_frames=${data}/good-frames	# list of frames to analyze
 
 #----------------------------------------------------------------------
 
-cp ${code_home}/script.sh .
+cp ${code_home}/script_manyframes.sh .
 cp ${code_home}/clean.sh .
 cp ${code_home}/get_summary.sh .
 #cp ${code_home}/job.sub .
