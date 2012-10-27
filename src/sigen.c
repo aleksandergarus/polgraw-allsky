@@ -11,37 +11,34 @@
 #include "auxi.h"
 #include "lvcvirgo.h"
 
-static int help_flag=0; 
+static int help_flag=0;
+static int evade_flag=0; 
 
 /* Default output and data directories */
-#ifndef PREFIX
-#define PREFIX .
-#endif
 
-#ifndef DTAPREFIX
-#define DTAPREFIX .
-#endif
+//#ifndef DTAPREFIX
+//#define DTAPREFIX .
+//#endif
 
 double get_rand() ;
 
 int main(int argc, char *argv[]) {
 	
   int i, numl=0, freq_line_check, c, pm, gsize=2, band=0 ; 
-  char filename[64], prefix[64], dtaprefix[64], *wd=NULL ; 
+  char filename[64], dtaprefix[64], *wd=NULL ; 
   double freql[32768], linew[32768], sgnlo[8], rrn[2], h0=2.e-3, 
 	dvr, fpo, be1, be2, fr, lw, freqlp, freqlm, f1, f2,  
 	sepsm, cepsm, sinalt, cosalt, sindelt, cosdelt, 
 	nmin, nmax, iota, ph_o, psik, hop, hoc ; 
 
   FILE *data ;
+
+//  strcpy (dtaprefix, TOSTR(DTAPREFIX));
   		  
 //  clock_t uptime, downtime ;
 //  double time_in_seconds ; 	
 //  uptime = clock() / (CLOCKS_PER_SEC / 1000 ) ; 
   
-  strcpy (prefix, TOSTR(PREFIX));
-  strcpy (dtaprefix, TOSTR(DTAPREFIX));
-
   while (1) {
     static struct option long_options[] = {
       {"help", no_argument, &help_flag, 1},			
@@ -53,6 +50,8 @@ int main(int argc, char *argv[]) {
       {"cwd", required_argument, 0, 'c'},
       // input data directory 
       {"data", required_argument, 0, 'd'},
+      // evade lines 
+//      {"evade-lines", no_argument, &evade_flag, 1},
       // grid search range 
       {"gsize", required_argument, 0, 's'},
       {0, 0, 0, 0}
@@ -66,7 +65,7 @@ int main(int argc, char *argv[]) {
      printf("-a		GW amplitude (default value: 2.e-3)\n"); 
      printf("-b		Band number\n"); 
      printf("-c		Change to directory <dir>\n");     
-     printf("-d		Data directory (default is .)\n"); 
+     printf("-d		Data directory in case of lines (default is .)\n"); 
      printf("-s		Grid search range (default value: 2)\n");
      printf("--help		This help\n"); 		
      exit (0);
@@ -109,13 +108,26 @@ if (c == -1)
       abort ();
     }
   }
-  	
+		
   // Starting band frequency
   fpo = 100. + 0.96875 * band;
   // Detector, ephemerides etc. constants 
   lvcvirgo (fpo);
   
   fprintf(stderr, "Starting band frequency fpo: %lf\n", fpo) ; 
+
+ 
+  // If the -d switch is on giving a non-zero-length path 
+  // somewhere, the signal will be generated using the 
+  // information about lines there - will avoid known lines, 
+  // as well as pole regions 
+
+  evade_flag = strlen(dtaprefix) ; 
+
+  // Reading of lines data (lines related to a current band) 
+  if(evade_flag) {
+
+        fprintf(stderr, "Will evade lines\n") ;
 
   // Veto files
   // ----------
@@ -177,6 +189,8 @@ if (c == -1)
 
   fclose(data) ;  
 
+  } // end of reading line data in case of -d 
+
   // Because of frequency-domain filters, we search 
   // F-statistic in range (nmin+1, nmax) of data points 
   nmin = 2.*NAV ;
@@ -184,14 +198,14 @@ if (c == -1)
   rrn[0] = nmin/nfft ; 
   rrn[1] = nmax/nfft ;  
 
-
-
   // Random signal parameters 
   //------------------------- 
 
   // Frequency derivative 
   sgnlo[1] = -Smax*get_rand() ;
 
+
+  if(evade_flag) { 
   // Frequency must not fall into one of know lines 
   do { 
 
@@ -224,6 +238,14 @@ if (c == -1)
   // Frequency 
   sgnlo[0] *= M_PI ;
 
+  // Lines will not be avoided
+
+  } else { 
+	
+	sgnlo[0] =  M_PI*get_rand()*(rrn[1] - rrn[0]) + rrn[0] ;	
+
+  } 
+
   // Hemisphere 
   pm = round(get_rand()) + 1 ;
  
@@ -247,7 +269,11 @@ if (c == -1)
 
 	// Right ascension
   	sgnlo[3] = fmod (atan2 (sinalt, cosalt) + 2.*M_PI, 2.*M_PI);
-  
+
+	// breaks out of the outer loop
+	// if there is no -d switch with info about known lines   
+	if(!evade_flag) break; 
+
   } while((sgnlo[2] > dvr) || (sgnlo[2] < -dvr)) ; 
 
   // Random phase and polarization of the signal
