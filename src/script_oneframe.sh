@@ -1,8 +1,14 @@
 #!/bin/bash
 
 sig_pars=''
-until [ -n "$sig_pars" ]; do  
-	sig_pars=$(./sigen -d DATA -b BAND -s GSIZE -a H0)
+until [ -n "$sig_pars" ]; do
+  
+	sig_pars=$(./sigen -b BAND -s GSIZE -a H0)
+#       -d switch directs to the data directory
+#       where the additional information about the lines
+#       in the input data is stored
+#
+#       sig_pars=$(./sigen -d DATA -b BAND -s GSIZE -a H0)
 done 
 
 echo "$sig_pars" > sig_BAND
