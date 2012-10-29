@@ -22,7 +22,7 @@ sigen - randomized parameters generator for software injection
 	-a <num>	GW amplitude (default value: 2.e-3) 
 	-b <num>	Frequency band number
 	-c <dir>	changes the working directory to <dir>
-	-d <dir>	Input data directory (default is .)
+	-d <dir>	Data directory in case of lines (default is .)
 	-s <num>	Grid search range (+- the injection position, 
 				in grid coordinates; default value: 2)
 
