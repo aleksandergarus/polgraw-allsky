@@ -44,6 +44,6 @@ sim_num=${PWD##*/}
 
 #rm -fr state* candidates/* *.e* *.o*
 # write down summary 
-echo $sim_num $sig_pars $snr $highsnr > H0_BAND_${sim_num}.sum
+echo $sim_num $sig_pars $snr $num_of_frames $highsnr > H0_BAND_${sim_num}.sum
 
 exit 0

@@ -99,6 +99,6 @@ est=$(COINCH/cp_clean/stat2data_simple -cval $max $dr'_BAND.stat')
 cd ../; rm -fr state* candidates/* *.e* *.o*
 
 # write down the summary 
-echo $sim_num $sig_pars $snr $max $dr CELL $est >> H0_BAND_${sim_num}.sum
+echo $sim_num $sig_pars $snr $max $dr $num_of_frames CELL $est >> H0_BAND_${sim_num}.sum
 
 exit 0
