@@ -87,12 +87,6 @@ gridr (double *M, int *spndr, int *nr, int *mr) {
 		}
 	}
 
-  nr[0] = nr0 ; 
-  nr[1] = nr1 ; 
-
-  mr[0] = mr0 ; 
-  mr[1] = mr1 ;   
-  
   // number of points in the sky ellipse
   return k ; 	
 

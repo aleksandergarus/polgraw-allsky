@@ -15,8 +15,8 @@ extern "C"
 #define INT 1		/* simplest interpolation */
 #define FFT 2		/* refined (fft) interpolation */
 
-  extern int nod, N, Nv, nfft, s, nd, fftpad, interpftpad;
-  extern double dt, B, oms, deg, c, AU, epsma, a, f, b, Omegar,		\
+  extern int nod, N, nfft, s, nd, fftpad, interpftpad;
+  extern double dt, B, oms, deg, c, AU, epsma, a, f, b, Omegar,	\
     omr, SIDday, TAIday, ephi, elam, eheight, egam, epsi, r, yr,	\
     tau_min, alfa, Smax, c1, c2, c3, c4, c5, c6, c7, c8, c9;
 
@@ -28,13 +28,13 @@ extern "C"
 		double *, double *, int);
   double FStat (double *, int, int, int);
 
-  double *JobCore (int, int, int, int, int, double *,			\
+  int JobCore (int, int, int, int, int, double *,			\
 		   double *, double *, int, int,			\
 		   int, fftw_complex *, fftw_complex *,			\
 		   fftw_complex *, fftw_complex *,			\
 		   fftw_plan, fftw_plan, fftw_plan,			\
 		   int, int, double, double, double, double,	 	\
-		   int *, int, int, int *, double, double,		\
+		   double *, int *, int, int, int *, double, double,		\
 		   double, int);
 
   int gridr (double *, int *, int *, int *);

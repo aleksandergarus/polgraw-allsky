@@ -1,7 +1,7 @@
 #include <math.h>
 #include "auxi.h"
 
-int nod, N, Nv, nfft, s, nd, fftpad, interpftpad;
+int nod, N, nfft, s, nd, fftpad, interpftpad;
 double dt, B, oms, deg, c, AU, epsma;
 double a, f, b, Omegar, omr, SIDday, TAIday;
 double ephi, elam, eheight, egam, epsi, r;
@@ -58,7 +58,7 @@ lvcvirgo (double fpo) { /* Offset frequency fpo */
   /* Observation time: no. of days */
   nod = 2;
   /* No. of data points */
-  Nv = N = round (nod*SIDday/dt);
+  N = round (nod*SIDday/dt);
 
   /* length of FFT */
   nfft = 1 << (int)ceil(log(N)/log(2.));
