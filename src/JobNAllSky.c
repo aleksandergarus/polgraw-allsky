@@ -362,74 +362,38 @@ JobNAllSky (int argc, char *argv[]) {
   aa = (double *) calloc (Nv, sizeof (double));
   bb = (double *) calloc (Nv, sizeof (double));
 
-    shft = (double *) calloc (N, sizeof (double));
-    shftf = (double *) calloc (N, sizeof (double));
-    xDatma = (complex double *) calloc (N, sizeof (complex double));
-    xDatmb = (complex double *) calloc (N, sizeof (complex double));
+  shft = (double *) calloc (N, sizeof (double));
+  shftf = (double *) calloc (N, sizeof (double));
+  xDatma = (complex double *) calloc (N, sizeof (complex double));
+  xDatmb = (complex double *) calloc (N, sizeof (complex double));
 
-  xa = fftw_malloc (4 * fftpad * nfft * sizeof (fftw_complex));
-
-  // FFT plans vary w.r.t the method of calculation: 
-  // case INT (simple interpolation [interbinning] of a shorter Fourier transform)
-  if(fftinterp==INT) { 
-
-	xao = fftw_malloc (2 * nfft * sizeof (fftw_complex));
- 
-	// Plans a multidimensional DFT, where the input variables are:
-	plan = fftw_plan_many_dft 
-			(1,	// dimension of the transform (rank) 
-			&nfft,	// size of the transform 
-			2,	// how many transforms (the k-th transform 
-				// is of the array starting at xa + k*idist
-				// and xao + k*odist) 
-			xa,	// input array
-			NULL,	// inembed (defines auxilary array 
+  xa  = fftw_malloc (4 * fftpad * nfft * sizeof (fftw_complex));
+  xao = fftw_malloc (2 * nfft * sizeof (fftw_complex));
+  
+  // Interpolation plan (INT or FFT): 
+  // Plans a multidimensional DFT, where the input variables are:
+  plan = fftw_plan_many_dft(
+        1,	// dimension of the transform (rank) 
+        &nfft,	// size of the transform 
+		2,	// how many transforms (the k-th transform 
+			// is of the array starting at xa + k*idist
+			// and xao + k*odist) 
+		xa,	// input array
+		NULL,	// inembed (defines auxilary array 
 				// of size nfft)
-			1,	// input stride (the j-th element of 
+		1,	// input stride (the j-th element of 
 				// the input array is located at j*istride)
-			nfft,	// idist (needed if many transforms) 
-			xao,	// output array
-			NULL,	// onembed (defines auxilary array 
-                                // of size nfft)
-			1,	// output stride (the j-th element of 
-                                // the output array is located at j*ostride)
-			nfft,	// odist (needed if many transforms)
-			FFTW_FORWARD,	// sign of the transform 
-					// (-1 in the exponent)
-			FFTW_MEASURE);	// to get the optimal plan
+		nfft,	// idist (needed if many transforms) 
+		xao,	// output array
+		NULL,	// onembed (defines auxilary array 
+                // of size nfft)
+		1,	// output stride (the j-th element of 
+            // the output array is located at j*ostride)
+		nfft,	// odist (needed if many transforms)
+		FFTW_FORWARD,	// sign of the transform 
+					    // (-1 in the exponent)
+		FFTW_MEASURE);	// to get the optimal plan
 	// (more info at http://www.fftw.org/fftw3_doc/Advanced-Complex-DFTs.html)
-
-  // Case FFT (longer Fourier transforms, interpolation by zero padding)
-  } else { 
-
-	nfftf = fftpad*nfft ; 
-
-	// Plans a multidimensional DFT, where the input variables are:
-	plan = fftw_plan_many_dft 
-                        (1,     // dimension of the transform (rank) 
-                        &nfftf, // size of the transform 
-                        2,      // how many transforms (the k-th transform 
-                                // is of the array starting at xa + k*idist
-                                // and xao + k*odist) 
-                        xa,     // input array
-                        NULL,   // inembed (defines auxilary array 
-                                // of size nfft)
-                        1,      // input stride (the j-th element of 
-                                // the input array is located at j*istride)
-                        nfftf,  // idist (needed if many transforms) 
-                        xa,     // output array
-                        NULL,   // onembed (defines auxilary array 
-                                // of size nfft)
-                        1,      // output stride (the j-th element of 
-                                // the output array is located at j*ostride)
-                        nfftf,  // odist (needed if many transforms)
-                        FFTW_FORWARD,   // sign of the transform 
-                                        // (-1 in the exponent)
-                        FFTW_MEASURE);  // to get the optimal plan
-  	// (more info at http://www.fftw.org/fftw3_doc/Advanced-Complex-DFTs.html)
-
- } 
-
 
   // These two plans below are used in the resampling 
   // procedure in JobCore() 

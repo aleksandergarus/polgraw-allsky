@@ -283,7 +283,7 @@ JobCore(int pm,			// hemisphere
 	    for (i=Npoints; i<fftpad*nfft; i++)
 	      xa[i] = xb[i] = 0.;
 	    fftw_execute (plan);
-	    xao = xa;
+//#mb	    xao = xa;
 	    xbo = xb;
 	  }
 	  (*FNum)++;
